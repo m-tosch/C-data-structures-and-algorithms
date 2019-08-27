@@ -12,7 +12,6 @@ int main(){
      */
     printf("----- stack -----\n");
     test_stack();
-
 }
 
 

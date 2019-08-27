@@ -9,13 +9,15 @@
 #define STACK_DIFF_SIZE 16 
 
 /*
- * Dynamic stack. Size increases when full.
- * Implemented with array, not with a linked list
+ * Stack implemented as linked list
  */
+struct stack_node_s {
+    struct stack_node_s *next;
+    void *data;
+};
+
 struct stack_s {
-    void **bottom;
-    size_t len;
-    size_t size;
+    struct stack_node_s *top;
 };
 
 typedef struct stack_s stack_t;

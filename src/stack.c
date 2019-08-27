@@ -12,14 +12,7 @@ stack_t* stack_init(){
     if (stack == NULL) {
         return NULL;
     }
-    // memory allocation for initial stack elements failed
-    if ((stack->bottom = malloc(STACK_INIT_SIZE*sizeof(*(stack->bottom)))) == NULL) {
-        free(stack);
-        return NULL;
-    }
-    // memory allocation successfull
-    stack->size = STACK_INIT_SIZE;
-    stack->len = 0;
+    stack->top = NULL;
     return stack;
 }
 
@@ -35,7 +28,11 @@ int stack_destroy(stack_t *stack) {
     if (stack == NULL) {
         return 1;
     }
-    free(stack->bottom);
+    while(stack->top != NULL) {
+        struct stack_node_s *node = stack->top;
+        stack->top = node->next;
+        free(node);
+    }
     free(stack);
     return 0;
 }
@@ -52,7 +49,10 @@ int stack_count(stack_t *stack) {
     if (stack == NULL) {
         return -1;
     }
-	return stack->len;
+    unsigned int i;
+    struct stack_node_s *n;
+    for(i=1, n=stack->top; n->next; i++, n=n->next);
+	return i;
 }
 
 /*
@@ -64,7 +64,7 @@ int stack_count(stack_t *stack) {
  *            0 otherwise
  */
 int stack_empty(stack_t *stack) {
-    if (stack == NULL || stack->len == 0) {
+    if (stack == NULL || stack->top == NULL) {
         return 1;
     } else {
         return 0;
@@ -72,39 +72,31 @@ int stack_empty(stack_t *stack) {
 }
 
 /*
- *   Pushes a new element onto the stack. 
- *   Increases the stack size if full. The amount is specified by #define parameters
- *   If the size is increased, the memory is re-allocated.
+ *   Pushes a new element onto the stack
  *
  *   *stack: stack pointer
  *   *data: void data pointer
  *
  *   returns: 0 if successfull
  *            1 if the stack was never allocated
- *            2 if memory allocation for increasing the stack size failed
+ *            2 if memory allocation for new stack element failed
  */
 int stack_push(stack_t *stack, void *data) {
     if (stack == NULL) {
         return 1;
     }
-    // stack is full. increase size
-    if (stack->len == stack->size) {
-        size_t new_size = stack->size + STACK_INCR_SIZE;
-        void **new_bottom = realloc(stack->bottom, new_size*sizeof(*(stack->bottom)));
-        if (new_bottom == NULL) {
-            return 2;
-        }
-        stack->bottom = new_bottom;
-        stack->size = new_size;
+    struct stack_node_s *node = malloc(sizeof(struct stack_node_s));
+    if(node == NULL){
+        return 2;
     }
-    stack->bottom[(stack->len)++] = data;
+    node->data = data;
+    node->next = stack->top;
+    stack->top = node;
     return 0;
 }
 
 /*
- *   Removes and returns the top element from the stack.
- *   Decreases the stack size if necessary as defined by #define parameters.
- *   If the size is decreased, the memory is re-allocated.
+ *   Removes and returns the top element from the stack
  *
  *   *stack: stack pointer
  *
@@ -112,35 +104,33 @@ int stack_push(stack_t *stack, void *data) {
  *            NULL if stack is empty or wasn't allocated
  */
 void *stack_pop(stack_t *stack) {
-    if (stack == NULL || stack->len == 0) {
+    if (stack == NULL || stack->top == NULL) {
         return NULL;
     }
-    void *data = stack->bottom[--(stack->len)];
-    // shrink stack if necessary
-    if ((stack->size - stack->len) >= STACK_DIFF_SIZE) {
-        size_t new_size = stack->len + (stack->len + STACK_INCR_SIZE) % STACK_INCR_SIZE;
-        stack->bottom = realloc(stack->bottom, new_size*sizeof(*(stack->bottom)));
-        stack->size = new_size;
-    }
+    struct stack_node_s *node = stack->top;
+    void *data = node->data;
+    stack->top = node->next;
+    free(node);
     return data;
 }
 
 /*
- *   Returns the top element from the stack without removing it.
+ *   Returns the top element from the stack without removing it
  *
  *   *stack: stack pointer
  *
  *   returns: top stack element
  */
 void *stack_peek(stack_t *stack) {
-    if (stack == NULL || stack->len == 0) {
+    if (stack == NULL || stack->top == NULL) {
         return NULL;
     }
-    return stack->bottom[(stack->len)-1];
+    return stack->top->data;
 }
 
 /*
  *   Prints the elements on the stack and their index bottom to top
+ *   --- INTEGER ONLY ---
  *
  *   *stack: stack pointer
  * 
@@ -151,8 +141,13 @@ int stack_print(stack_t *stack) {
     if (stack == NULL) {
         return -1;
     }
-    for(int i=0; i < stack->len; i++){
-        printf("[%d]: %d\n", i, *((int*)stack->bottom[i]));
+    unsigned int i;
+    struct stack_node_s *n;
+    for(i=0, n=stack->top; n->data; i++, n=n->next){
+        printf("[%d]: %d\n", i, *((int*)n->data));
+        if(!n->next){
+            break;
+        }
     }
     return 0;
 }
