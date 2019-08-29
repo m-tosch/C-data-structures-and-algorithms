@@ -1,4 +1,4 @@
-#include "stack.h"
+#include "../header/stack.h"
 
 /*
  *   Creates the stack. Allocates the memory for initial size

@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "stack.h"
-#include "queue.h"
-
+#include "header/stack.h"
+#include "header/queue.h"
+#include "header/bintree.h"
 
 void test_stack();
 void test_queue();
-
+void test_bintree();
 
 int main(){
     /*
@@ -19,6 +19,11 @@ int main(){
      */
     printf("----- queue -----\n");
     test_queue();
+    /*
+     * bintree (Binary Search Tree)data_structures
+     */
+    printf("----- bintree -----\n");
+    test_bintree();
 }
 
 
@@ -66,4 +71,35 @@ void test_queue() {
     queue_print(queue);
     // deallocate
     queue_destroy(queue);
+}
+
+void test_bintree() {
+    int arr_bintree[7] = {60,40,30,50,80,70,90};
+    // root node
+    tree_node_t* root = NULL;
+    root = bintree_insert(root, arr_bintree[0]);
+    printf("root: %d\n", root->value);
+    // insert
+    for(int i=1; i<sizeof(arr_bintree)/sizeof(int); i++) {
+        bintree_insert(root, arr_bintree[i]);
+    }
+    // search
+    int search = 70;
+    printf("search for %d: %d\n", search, bintree_search(root, search));
+    // depth
+    printf("depth: %d\n", bintree_depth(root));
+    // print
+    /*    60
+        /    \ 
+       40     80 
+      /  \   /  \ 
+     30  50 70  90 */
+    printf("-- inorder\n");
+    bintree_inorder(root);
+    printf("-- preorder\n");
+    bintree_preorder(root);
+    printf("-- postorder\n");
+    bintree_postorder(root);
+    // deallocate
+    bintree_destroy(root);
 }

@@ -1,4 +1,4 @@
-#include "queue.h"
+#include "../header/queue.h"
 
 /*
  *   Creates the queue. Allocates the memory
