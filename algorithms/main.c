@@ -5,7 +5,9 @@
 
 void test_bubblesort(int *arr, size_t const len);
 void test_insertionsort(int *arr, size_t const len);
+void test_selectionsort(int *arr, size_t const len);
 void print_list(int *arr, size_t const len);
+
 
 int main(){
     int arr[15] = {5,1,8,3,191,9,14,62,444,79,16,88,13,55,81};
@@ -22,7 +24,13 @@ int main(){
      */
     printf("--- insertion sort ---\n");
     test_insertionsort(arr, len);
+    /*
+     * selection sort
+     */
+    printf("--- selection sort ---\n");
+    test_selectionsort(arr, len);
 }
+
 
 void test_bubblesort(int *arr, size_t const len){
     int arr_cpy[len];
@@ -35,6 +43,13 @@ void test_insertionsort(int *arr, size_t const len){
     int arr_cpy[len];
     memcpy(arr_cpy, arr, sizeof(arr_cpy));
     insertionsort(arr_cpy, len);
+    print_list(arr_cpy, len);
+}
+
+void test_selectionsort(int *arr, size_t const len){
+    int arr_cpy[len];
+    memcpy(arr_cpy, arr, sizeof(arr_cpy));
+    selectionsort(arr_cpy, len);
     print_list(arr_cpy, len);
 }
 
