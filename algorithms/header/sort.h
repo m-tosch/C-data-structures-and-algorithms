@@ -5,5 +5,6 @@
 
 
 void bubblesort(int *array, size_t const len);
+void insertionsort(int *array, size_t const len);
 
 #endif

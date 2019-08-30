@@ -19,3 +19,18 @@ void bubblesort(int *array, size_t const len){
         }
     }
 }
+
+/*
+ * Takes elements from list, inserts them in the new, sorted list
+ * 
+ * Runtime: best O(n), worst O(n²)
+ * Memory: O(1)
+ */
+void insertionsort(int *array, size_t const len) {
+	for (int i = 1; i < len; ++i) {
+		int tmp = array[i];
+		int j = i;
+        for(; j > 0 && tmp < array[j-1]; array[j] = array[j-1], j--);
+		array[j] = tmp;
+	}
+}
