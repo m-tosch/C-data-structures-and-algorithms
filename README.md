@@ -2,4 +2,4 @@
 
 ## heading
 
-<img src="https://render.githubusercontent.com/render/math?math=\huge\mu">
+<img src="https://render.githubusercontent.com/render/math?math=\hug{\mu}">
